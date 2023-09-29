@@ -180,6 +180,7 @@
     <Content Include="Views\Home\Home.cshtml" />
     <Content Include="Views\Trasgressore\AggiungiTrasgressore.cshtml" />
     <Content Include="Views\Trasgressore\ListaTrasgressori.cshtml" />
+    <Content Include="Views\Trasgressore\ModificaTrasgressore.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

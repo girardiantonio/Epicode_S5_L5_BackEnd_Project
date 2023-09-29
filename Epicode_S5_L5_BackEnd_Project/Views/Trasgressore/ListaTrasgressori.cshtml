@@ -40,7 +40,7 @@
                     <td>@trasgressore.Cap</td>
                     <td>@trasgressore.Codice</td>
                     <td class="d-flex justify-content-evenly">
-                        @Html.ActionLink("Modifica", "ModificaTrasgressore", "Trasgressore", new { id = trasgressore.IdAnagrafica }, new { @class = "btn btn-warning btn-sm" })
+                        @Html.ActionLink("Modifica", "ModificaTrasgressore", "Trasgressore", new { IdAnagrafica = trasgressore.IdAnagrafica }, new { @class = "btn btn-warning btn-sm" })
                         <form action="@Url.Action("EliminaTrasgressore", "Trasgressore")" method="post">
                             @Html.Hidden("IdAnagrafica", trasgressore.IdAnagrafica)
                             @Html.AntiForgeryToken()
