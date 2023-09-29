@@ -89,6 +89,67 @@ namespace Epicode_S5_L5_BackEnd_Project.Controllers
         }
 
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EliminaTrasgressore(int IdAnagrafica)
+        {
+            Trasgressore trasgressoreDaEliminare = GetTrasgressoreById(IdAnagrafica);
+
+            if (trasgressoreDaEliminare == null)
+            {
+                TempData["Errore"] = "Trasgressore non trovato!";
+            }
+            else
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(GetConnectionString()))
+                {
+                    sqlConnection.Open();
+                    string query = "DELETE FROM Anagrafica WHERE IdAnagrafica = @IdAnagrafica";
+
+                    using (SqlCommand cmd = new SqlCommand(query, sqlConnection))
+                    {
+                        cmd.Parameters.AddWithValue("@IdAnagrafica", IdAnagrafica);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                TempData["Messaggio"] = "Trasgressore eliminato con successo!";
+            }
+            return RedirectToAction("ListaTrasgressori");
+        }
+
+
+        private Trasgressore GetTrasgressoreById(int IdAnagrafica)
+        {
+            using (SqlConnection sqlConnection = new SqlConnection(GetConnectionString()))
+            {
+                sqlConnection.Open();
+                string query = "SELECT * FROM Anagrafica WHERE IdAnagrafica = @IdAnagrafica";
+
+                using (SqlCommand cmd = new SqlCommand(query, sqlConnection))
+                {
+                    cmd.Parameters.AddWithValue("@IdAnagrafica", IdAnagrafica);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            Trasgressore trasgressore = new Trasgressore
+                            {
+                                IdAnagrafica = Convert.ToInt32(reader["IdAnagrafica"]),
+                                Cognome = reader["Cognome"].ToString(),
+                                Nome = reader["Nome"].ToString(),
+                                Indirizzo = reader["Indirizzo"].ToString(),
+                                Citta = reader["Citta"].ToString(),
+                                Cap = reader["Cap"].ToString(),
+                                Codice = reader["Codice"].ToString()
+                            };
+                            return trasgressore;
+                        }
+                        return null;
+                    }
+                }
+            }
+        }
 
 
 

@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<Epicode_S5_L5_BackEnd_Project.Models.Trasgressore>
+
+@{
     ViewBag.Title = "ListaTrasgressori";
 }
 
@@ -16,6 +18,7 @@
     <table class="table table-bordered">
         <thead>
             <tr>
+                <th>IdAnagrafica</th>
                 <th>Cognome</th>
                 <th>Nome</th>
                 <th>Indirizzo</th>
@@ -36,9 +39,13 @@
                     <td>@trasgressore.Citta</td>
                     <td>@trasgressore.Cap</td>
                     <td>@trasgressore.Codice</td>
-                    <td>
-                        <a href="@Url.Action("ModificaTrasgressore", "Trasgressore", new { id = trasgressore.IdAnagrafica })" class="btn btn-warning btn-sm">Modifica</a>
-                        <a href="@Url.Action("EliminaTrasgressore", "Trasgressore", new { id = trasgressore.IdAnagrafica })" class="btn btn-danger btn-sm">Elimina</a>
+                    <td class="d-flex justify-content-evenly">
+                        @Html.ActionLink("Modifica", "ModificaTrasgressore", "Trasgressore", new { id = trasgressore.IdAnagrafica }, new { @class = "btn btn-warning btn-sm" })
+                        <form action="@Url.Action("EliminaTrasgressore", "Trasgressore")" method="post">
+                            @Html.Hidden("IdAnagrafica", trasgressore.IdAnagrafica)
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="btn btn-danger btn-sm">Elimina</button>
+                        </form>
                     </td>
                 </tr>
             }
