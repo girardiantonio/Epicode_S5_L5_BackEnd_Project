@@ -20,6 +20,42 @@ namespace Epicode_S5_L5_BackEnd_Project.Controllers
             return ConfigurationManager.ConnectionStrings["DB_ConnString"].ConnectionString;
         }
 
+        private Verbale GetVerbaleById(int IdVerbale)
+        {
+            using (SqlConnection sqlConnection = new SqlConnection(GetConnectionString()))
+            {
+                sqlConnection.Open();
+                string query = "SELECT * FROM Verbale WHERE IdVerbale = @IdVerbale";
+
+                using (SqlCommand cmd = new SqlCommand(query, sqlConnection))
+                {
+                    cmd.Parameters.AddWithValue("@IdVerbale", IdVerbale);
+
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            Verbale verbale = new Verbale
+                            {
+                                IdVerbale = (int)reader["IdVerbale"],
+                                DataViolazione = (DateTime)reader["DataViolazione"],
+                                IndirizzoViolazione = reader["IndirizzoViolazione"].ToString(),
+                                NominativoAgente = reader["NominativoAgente"].ToString(),
+                                DataTrascrizioneVerbale = (DateTime)reader["DataTrascrizioneVerbale"],
+                                Importo = (decimal)reader["Importo"],
+                                DecurtamentoPunti = (int)reader["DecurtamentoPunti"],
+                                IdAnagrafica = (int)reader["IdAnagrafica"],
+                                IdViolazione = (int)reader["IdViolazione"]
+                            };
+                            return verbale;
+                        }
+                        return null;
+                    }
+                }
+            }
+        }
+
+
         [HttpGet]
         public List<Violazione> ListaViolazioni()
         {
@@ -131,7 +167,6 @@ namespace Epicode_S5_L5_BackEnd_Project.Controllers
             return View(verbali);
         }
 
-
         [HttpGet]
         public ActionResult AggiungiVerbale()
         {
@@ -154,6 +189,116 @@ namespace Epicode_S5_L5_BackEnd_Project.Controllers
 
             return View();
         }
+
+        [HttpPost]
+        public ActionResult AggiungiVerbale(Verbale model)
+        {
+            if (ModelState.IsValid)
+            {
+                string query = "INSERT INTO Verbale (DataViolazione, IndirizzoViolazione, NominativoAgente, DataTrascrizioneVerbale, Importo, DecurtamentoPunti, IdAnagrafica, IdViolazione)" + "VALUES (@DataViolazione, @IndirizzoViolazione, @NominativoAgente, @DataTrascrizioneVerbale, @Importo, @DecurtamentoPunti, @IdAnagrafica, @IdViolazione)";
+
+                using (SqlConnection sqlConnection = new SqlConnection(GetConnectionString()))
+                {
+                    sqlConnection.Open();
+                    using (SqlCommand cmd = new SqlCommand(query, sqlConnection))
+                    {
+                        cmd.Parameters.AddWithValue("@DataViolazione", model.DataViolazione);
+                        cmd.Parameters.AddWithValue("@IndirizzoViolazione", model.IndirizzoViolazione);
+                        cmd.Parameters.AddWithValue("@NominativoAgente", model.NominativoAgente);
+                        cmd.Parameters.AddWithValue("@DataTrascrizioneVerbale", model.DataTrascrizioneVerbale);
+                        cmd.Parameters.AddWithValue("@Importo", model.Importo);
+                        cmd.Parameters.AddWithValue("@DecurtamentoPunti", model.DecurtamentoPunti);
+                        cmd.Parameters.AddWithValue("@IdAnagrafica", model.IdAnagrafica);
+                        cmd.Parameters.AddWithValue("@IdViolazione", model.IdViolazione);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                TempData["Messaggio"] = "Verbale aggiunto con successo!";
+                return RedirectToAction("ListaVerbali");
+            }
+            TempData["Errore"] = "Il modello non è valido. Correggi gli errori e riprova.";
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EliminaVerbale(int IdVerbale)
+        {
+            Verbale verbaleDaEliminare = GetVerbaleById(IdVerbale);
+
+            if (verbaleDaEliminare == null)
+            {
+                TempData["Errore"] = "Violazione non trovata!";
+            }
+            else
+            {
+                using (SqlConnection sqlConnection = new SqlConnection(GetConnectionString()))
+                {
+                    sqlConnection.Open();
+                    string query = "DELETE FROM Verbale WHERE IdVerbale = @IdVerbale";
+
+                    using (SqlCommand cmd = new SqlCommand(query, sqlConnection))
+                    {
+                        cmd.Parameters.AddWithValue("@IdVerbale", IdVerbale);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                TempData["Messaggio"] = "Verbale eliminato con successo!";
+            }
+            return RedirectToAction("ListaVerbali");
+        }
+
+        [HttpGet]
+        public ActionResult ModificaVerbale(int IdVerbale)
+        {
+            Verbale verbaleDaModificare = GetVerbaleById(IdVerbale);
+
+            if (verbaleDaModificare == null)
+            {
+                TempData["Errore"] = "Verbale non trovato!";
+            }
+
+            return View(verbaleDaModificare);
+        }
+
+        [HttpPost]
+        public ActionResult ModificaVerbale(Verbale verbaleModificato)
+        {
+            if (ModelState.IsValid)
+            {
+                string query =
+                    "UPDATE Verbale SET " +
+                    "DataViolazione = @DataViolazione, " +
+                    "IndirizzoViolazione = @IndirizzoViolazione, " +
+                    "NominativoAgente = @NominativoAgente, " +
+                    "DataTrascrizioneVerbale = @DataTrascrizioneVerbale, " +
+                    "Importo = @Importo, " +
+                    "DecurtamentoPunti = @DecurtamentoPunti " +
+                    "WHERE IdVerbale = @IdVerbale";
+
+                using (SqlConnection sqlConnection = new SqlConnection(GetConnectionString()))
+                {
+                    sqlConnection.Open();
+
+                    using (SqlCommand cmd = new SqlCommand(query, sqlConnection))
+                    {
+                        cmd.Parameters.AddWithValue("@IdVerbale", verbaleModificato.IdVerbale);
+                        cmd.Parameters.AddWithValue("@DataViolazione", verbaleModificato.DataViolazione);
+                        cmd.Parameters.AddWithValue("@IndirizzoViolazione", verbaleModificato.IndirizzoViolazione);
+                        cmd.Parameters.AddWithValue("@NominativoAgente", verbaleModificato.NominativoAgente);
+                        cmd.Parameters.AddWithValue("@DataTrascrizioneVerbale", verbaleModificato.DataTrascrizioneVerbale);
+                        cmd.Parameters.AddWithValue("@Importo", verbaleModificato.Importo);
+                        cmd.Parameters.AddWithValue("@DecurtamentoPunti", verbaleModificato.DecurtamentoPunti);
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                TempData["Messaggio"] = "Verbale modificato con successo!";
+            }
+            return RedirectToAction("ListaVerbali");
+        }
+
 
     }
 

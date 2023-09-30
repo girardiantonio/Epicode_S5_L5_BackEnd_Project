@@ -191,6 +191,7 @@
     <Content Include="Views\Verbale\AggiungiVerbale.cshtml" />
     <Content Include="Views\Verbale\ListaVerbali.cshtml" />
     <Content Include="Views\Verbale\ModificaVerbale.cshtml" />
+    <Content Include="Views\Home\Console.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
