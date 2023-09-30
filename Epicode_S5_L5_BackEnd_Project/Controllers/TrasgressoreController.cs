@@ -67,7 +67,7 @@ namespace Epicode_S5_L5_BackEnd_Project.Controllers
                         {
                             Trasgressore trasgressore = new Trasgressore
                             {
-                                IdAnagrafica = Convert.ToInt32(reader["IdAnagrafica"]),
+                                IdAnagrafica = (int)reader["IdAnagrafica"],
                                 Cognome = reader["Cognome"].ToString(),
                                 Nome = reader["Nome"].ToString(),
                                 Indirizzo = reader["Indirizzo"].ToString(),
@@ -84,7 +84,6 @@ namespace Epicode_S5_L5_BackEnd_Project.Controllers
             }
              return View(trasgressori);
         }
-
 
         [HttpGet]
         public ActionResult AggiungiTrasgressore()
@@ -120,7 +119,6 @@ namespace Epicode_S5_L5_BackEnd_Project.Controllers
             TempData["Errore"] = "Il modello non è valido. Correggi gli errori e riprova.";
             return View(model);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -198,13 +196,5 @@ namespace Epicode_S5_L5_BackEnd_Project.Controllers
             }
             return RedirectToAction("ListaTrasgressori");
         }
-
-
-
-
-
-
-
-
     }
 }
