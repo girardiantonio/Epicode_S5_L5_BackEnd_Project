@@ -9,5 +9,7 @@ namespace Epicode_S5_L5_BackEnd_Project.Models
     {
         public int IdViolazione { get; set; }
         public string Descrizione { get; set; }
+
+        public string ViolazioneCompleta => $"{IdViolazione} - {Descrizione}";
     }
 }

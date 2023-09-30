@@ -14,5 +14,7 @@ namespace Epicode_S5_L5_BackEnd_Project.Models
         public string Citta { get; set; }
         public string Cap { get; set; }
         public string Codice { get; set; }
+
+        public string AnagraficaCompleta => $"{IdAnagrafica} - {Cognome} {Nome}";
     }
 }
