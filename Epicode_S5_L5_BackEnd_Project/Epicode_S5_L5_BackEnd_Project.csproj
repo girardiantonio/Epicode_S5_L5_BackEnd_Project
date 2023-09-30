@@ -190,6 +190,7 @@
     <Content Include="Views\Violazione\ModificaViolazione.cshtml" />
     <Content Include="Views\Verbale\AggiungiVerbale.cshtml" />
     <Content Include="Views\Verbale\ListaVerbali.cshtml" />
+    <Content Include="Views\Verbale\ModificaVerbale.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

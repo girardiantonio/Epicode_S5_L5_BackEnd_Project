@@ -94,6 +94,45 @@ namespace Epicode_S5_L5_BackEnd_Project.Controllers
 
 
         [HttpGet]
+        public ActionResult ListaVerbali()
+        {
+            List<Verbale> verbali = new List<Verbale>();
+
+            using (SqlConnection connection = new SqlConnection(GetConnectionString()))
+            {
+                connection.Open();
+                string query = "SELECT * FROM Verbale";
+
+                using (SqlCommand cmd = new SqlCommand(query, connection))
+                {
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Verbale verbale = new Verbale
+                            {
+                                IdVerbale = (int)reader["IdVerbale"],
+                                DataViolazione = (DateTime)reader["DataViolazione"],
+                                IndirizzoViolazione = reader["IndirizzoViolazione"].ToString(),
+                                NominativoAgente = reader["NominativoAgente"].ToString(),
+                                DataTrascrizioneVerbale = (DateTime)reader["DataTrascrizioneVerbale"],
+                                Importo = (decimal)reader["Importo"],
+                                DecurtamentoPunti = (int)reader["DecurtamentoPunti"],
+                                IdAnagrafica = (int)reader["IdAnagrafica"],
+                                IdViolazione = (int)reader["IdViolazione"],
+                            };
+
+                            verbali.Add(verbale);
+                        }
+                    }
+                }
+
+            }
+            return View(verbali);
+        }
+
+
+        [HttpGet]
         public ActionResult AggiungiVerbale()
         {
             if (listaViolazioni == null)
